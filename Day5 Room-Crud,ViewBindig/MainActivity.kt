@@ -9,17 +9,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.roomcrud.databinding.ActivityMainBinding
 import com.example.roomcrud.db.Student
 import com.example.roomcrud.db.StudentDao
 import com.example.roomcrud.db.StudentDatabase
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var etName:EditText;
-    private lateinit var etMail:EditText;
-    private lateinit var btSave:Button;
-    private lateinit var btClear:Button;
-    private lateinit var rvStudent:RecyclerView;
+    private lateinit var binding:ActivityMainBinding
+//    private lateinit var etName:EditText;
+//    private lateinit var etMail:EditText;
+//    private lateinit var btSave:Button;
+//    private lateinit var btClear:Button;
+//    private lateinit var rvStudent:RecyclerView;
     private lateinit var adaptar: StudentRecyclerViewAdaptar;
     private lateinit var selectedStudent:Student;
     private var editMode=false;
@@ -30,14 +32,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        etName=findViewById(R.id.etName);
-        etMail=findViewById(R.id.etEmail);
-        btSave=findViewById(R.id.btSave);
-        btClear=findViewById(R.id.btClear);
 
-        rvStudent=findViewById(R.id.rvStudent);
+        binding=ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+//        etName=findViewById(R.id.etName);
+//        etMail=findViewById(R.id.etEmail);
+//        btSave=findViewById(R.id.btSave);
+//        btClear=findViewById(R.id.btClear);
+
+//        rvStudent=findViewById(R.id.rvStudent);
 
         val dao=StudentDatabase.getInstance(application).studentDao();
 
@@ -46,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         viewModel=ViewModelProvider(this,factory).get(StudentViewModel::class.java);
 
 
-        btSave.setOnClickListener{
+        binding.btSave.setOnClickListener{
 
             if (editMode==false) {
             saveStudentData();
@@ -56,25 +61,25 @@ class MainActivity : AppCompatActivity() {
                     Student(
 
                         selectedStudent.id,
-                        etName.text.toString(),
-                        etMail.text.toString()
+                        binding.etName.text.toString(),
+                        binding.etEmail.text.toString()
                     )
                 )
                 editMode=false;
-                btSave.text="Save";
-                btClear.text="Clear";
+                binding.btSave.text="Save";
+                binding.btClear.text="Clear";
             }
             clearInput();
         }
 
-        btClear.setOnClickListener{
+        binding.btClear.setOnClickListener{
 
             if (editMode) {
 
                 viewModel.deleteStudent(selectedStudent);
                 editMode=false;
-                btSave.text="Save";
-                btClear.text="Clear";
+                binding.btSave.text="Save";
+                binding.btClear.text="Clear";
 
             }
             clearInput();
@@ -96,8 +101,8 @@ class MainActivity : AppCompatActivity() {
             viewModel.insertStudent(
                 Student(
                     0,
-                    etName.text.toString(),
-                    etMail.text.toString()
+                    binding.etName.text.toString(),
+                    binding.etEmail.text.toString()
                 )
             )
 
@@ -107,17 +112,17 @@ class MainActivity : AppCompatActivity() {
     private fun clearInput(){
 
 
-            etName.setText("");
-            etMail.setText("");
+        binding.etName.setText("");
+        binding.etEmail.setText("");
 
     }
 
     private fun initRecyclerView(){
-        rvStudent.layoutManager=LinearLayoutManager(this);
+        binding.rvStudent.layoutManager=LinearLayoutManager(this);
         adaptar=StudentRecyclerViewAdaptar{
             listItemClicked(it);
         };
-        rvStudent.adapter=adaptar;
+        binding.rvStudent.adapter=adaptar;
 
         displayStudentList();
     }
@@ -132,10 +137,10 @@ class MainActivity : AppCompatActivity() {
     private fun listItemClicked(student:Student){
         selectedStudent=student;
         editMode=true;
-        btSave.text="Update";
-        btClear.text="Delete";
-        etMail.setText(student.email);
-        etName.setText(student.name);
+        binding.btSave.text="Update";
+        binding.btClear.text="Delete";
+        binding.etEmail.setText(student.email);
+        binding.etName.setText(student.name);
 //        Toast.makeText(this,"student ${student.name}",Toast.LENGTH_LONG).show();
     }
 }
