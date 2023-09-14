@@ -1,0 +1,1 @@
+user json to kotlin class extension or plugin in android studio to create Album and Album Item kotlin classes
